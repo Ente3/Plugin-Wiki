@@ -7,7 +7,7 @@
 
     <div class="row" id="wiki">
         @foreach($categories as $category)
-            <div class="col-md-3">
+            <div class="col-md-3 gy-3">
                 <a href="{{ route('wiki.show', $category) }}">
                     <div class="card">
                         <div class="card-body text-center">
