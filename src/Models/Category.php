@@ -3,6 +3,7 @@
 namespace Azuriom\Plugin\Wiki\Models;
 
 use Azuriom\Models\Role;
+use Azuriom\Models\Traits\AttachableParent;
 use Azuriom\Models\Traits\HasTablePrefix;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -27,7 +28,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Category extends Model
 {
+    use AttachableParent;
     use HasTablePrefix;
+
+    /**
+     * The relation name from the parent class to this class with attachments.
+     */
+    protected static string $attachableRelation = 'pages';
 
     /**
      * The table prefix associated with the model.
