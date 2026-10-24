@@ -1,3 +1,5 @@
+@php($isPrivate = (bool) old('is_private', isset($category) && $category->roles !== null))
+@php($selectedRoles = (array) old('roles', $category->roles ?? []))
 @csrf
 
 <div class="row gx-3">
@@ -22,7 +24,7 @@
             @endforeach
         </select>
 
-        @error('category_id')
+        @error('parent_id')
         <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
         @enderror
     </div>
@@ -47,7 +49,7 @@
 <div class="mb-3">
     <label class="form-label" for="slugInput">{{ trans('messages.fields.slug') }}</label>
     <div class="input-group @error('slug') has-validation @enderror">
-        <div class="input-group-text">{{ url('/wiki') }}/</div>
+        <div class="input-group-text">{{ route('wiki.index') }}/</div>
         <input type="text" class="form-control @error('slug') is-invalid @enderror" id="slugInput" name="slug" value="{{ old('slug', $category->slug ?? '') }}" required>
 
         @error('slug')
@@ -57,15 +59,15 @@
 </div>
 
 <div class="mb-3 form-check form-switch">
-    <input type="checkbox" class="form-check-input" id="privateSwitch" name="is_private" data-bs-toggle="collapse" data-bs-target="#rolesGroup" @checked(isset($category) && $category->roles !== null)>
+    <input type="checkbox" class="form-check-input" id="privateSwitch" name="is_private" data-bs-toggle="collapse" data-bs-target="#rolesGroup" @checked($isPrivate)>
     <label class="form-check-label" for="privateSwitch">{{ trans('wiki::admin.categories.private') }}</label>
 </div>
 
-<div id="rolesGroup" class="{{ (isset($category) && $category->roles !== null) ? 'show' : 'collapse' }}">
+<div id="rolesGroup" class="{{ $isPrivate ? 'show' : 'collapse' }}">
     <div class="card card-body mb-2 pb-0">
         @foreach($roles as $role)
             <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="role{{ $role->id }}" name="roles[]" value="{{ $role->id }}" @checked(isset($category) && $category->roles !== null && $category->hasRole($role))>
+                <input type="checkbox" class="form-check-input" id="role{{ $role->id }}" name="roles[]" value="{{ $role->id }}" @checked(in_array($role->id, $selectedRoles))>
                 <label class="form-check-label" for="role{{ $role->id }}">
                     <span class="badge" style="{{ $role->getBadgeStyle() }}">{{ $role->name }}</span>
                 </label>
@@ -75,6 +77,6 @@
 </div>
 
 <div class="mb-3 form-check form-switch">
-    <input type="checkbox" class="form-check-input" id="enableSwitch" name="is_enabled" @checked($category->is_enabled ?? true)>
+    <input type="checkbox" class="form-check-input" id="enableSwitch" name="is_enabled" @checked(old('is_enabled', $category->is_enabled ?? true))>
     <label class="form-check-label" for="enableSwitch">{{ trans('wiki::admin.categories.enable') }}</label>
 </div>

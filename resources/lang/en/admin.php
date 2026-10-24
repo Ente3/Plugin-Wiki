@@ -13,14 +13,12 @@ return [
         'parent' => 'Parent category',
         'private' => 'Limit roles with access to this category',
 
-        'empty' => 'No category has been created currently.',
-
-        'info' => 'To be visible, a category must contain at least one page that is not in a subcategory.',
+        'empty' => 'No categories have been created yet.',
     ],
 
     'pages' => [
         'category' => 'category',
-        'updated' => 'Pages order updated.',
+        'updated' => 'Page and category order updated.',
     ],
 
     'permission' => 'Manage wiki',

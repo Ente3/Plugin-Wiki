@@ -13,14 +13,12 @@ return [
         'parent' => 'Catégorie parente',
         'private' => 'Limiter l\'accès à cette catégorie à certains rôles.',
 
-        'empty' => 'Aucune catégorie n\'a été créée actuellement.',
-
-        'info' => 'Pour être visible, une catégorie doit contenir au moins une page qui n\'est pas dans une sous-catégorie.',
+        'empty' => 'Aucune catégorie n\'a été créée pour le moment.',
     ],
 
     'pages' => [
         'category' => 'catégorie',
-        'updated' => 'Ordre des pages mis à jour.',
+        'updated' => 'Ordre des pages et des catégories mis à jour.',
     ],
 
     'permission' => 'Gérer le wiki',

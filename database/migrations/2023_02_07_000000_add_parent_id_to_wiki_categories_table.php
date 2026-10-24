@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('wiki_categories', function (Blueprint $table) {
             $table->unsignedInteger('parent_id')->nullable()->after('position');
 
-            $table->foreign('parent_id')->references('id')->on('wiki_categories');
+            $table->foreign('parent_id')->references('id')->on('wiki_categories')->nullOnDelete();
         });
     }
 

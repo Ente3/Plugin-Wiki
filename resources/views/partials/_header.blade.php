@@ -1,5 +1,21 @@
 <div class="row">
     <div class="col-md-9">
+        @isset($breadcrumb)
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-1">
+                    <li class="breadcrumb-item">
+                        <a href="{{ route('wiki.index') }}">{{ trans('wiki::messages.title') }}</a>
+                    </li>
+
+                    @foreach($breadcrumb as $item)
+                        <li class="breadcrumb-item">
+                            <a href="{{ route('wiki.show', $item) }}">{{ $item->name }}</a>
+                        </li>
+                    @endforeach
+                </ol>
+            </nav>
+        @endisset
+
         <h1>{{ $title }}</h1>
     </div>
 

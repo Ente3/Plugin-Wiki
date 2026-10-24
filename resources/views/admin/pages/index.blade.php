@@ -63,23 +63,26 @@
         }
 
         const saveButton = document.getElementById('save');
-        const saveButtonIcon = saveButton.querySelector('.btn-spinner');
 
-        saveButton.addEventListener('click', function () {
-            saveButton.setAttribute('disabled', '');
-            saveButtonIcon.classList.remove('d-none');
+        if (saveButton) {
+            const saveButtonIcon = saveButton.querySelector('.btn-spinner');
 
-            axios.post('{{ route('wiki.admin.pages.update-order') }}', {
-                'categories': serialize(sortable.el),
-            }).then(function (json) {
-                createAlert('success', json.data.message, true);
-            }).catch(function (error) {
-                createAlert('danger', error.response.data.message ? error.response.data.message : error, true)
-            }).finally(function () {
-                saveButton.removeAttribute('disabled');
-                saveButtonIcon.classList.add('d-none');
+            saveButton.addEventListener('click', function () {
+                saveButton.setAttribute('disabled', '');
+                saveButtonIcon.classList.remove('d-none');
+
+                axios.post('{{ route('wiki.admin.pages.update-order') }}', {
+                    'categories': serialize(sortable.el),
+                }).then(function (json) {
+                    createAlert('success', json.data.message, true);
+                }).catch(function (error) {
+                    createAlert('danger', error.response?.data?.message ? error.response.data.message : error, true)
+                }).finally(function () {
+                    saveButton.removeAttribute('disabled');
+                    saveButtonIcon.classList.add('d-none');
+                });
             });
-        });
+        }
     </script>
 @endpush
 
@@ -98,10 +101,12 @@
                 @each('wiki::admin.pages._category', $categories, 'category')
             </ol>
 
-            <button type="button" class="btn btn-success" id="save">
-                <i class="bi bi-save"></i> {{ trans('messages.actions.save') }}
-                <span class="spinner-border spinner-border-sm btn-spinner d-none" role="status"></span>
-            </button>
+            @if(! $categories->isEmpty())
+                <button type="button" class="btn btn-success" id="save">
+                    <i class="bi bi-save"></i> {{ trans('messages.actions.save') }}
+                    <span class="spinner-border spinner-border-sm btn-spinner d-none" role="status"></span>
+                </button>
+            @endif
 
             <a href="{{ route('wiki.admin.categories.create') }}" class="btn btn-primary">
                 <i class="bi bi-plus-lg"></i> {{ trans('wiki::admin.categories.add') }}
@@ -113,9 +118,5 @@
                 </a>
             @endif
         </div>
-    </div>
-
-    <div class="alert alert-info" role="alert">
-        <i class="bi bi-info-circle"></i> @lang('wiki::admin.categories.info')
     </div>
 @endsection
