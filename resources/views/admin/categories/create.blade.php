@@ -5,7 +5,7 @@
 @section('content')
     <div class="card shadow mb-4">
         <div class="card-body">
-            <form action="{{ route('wiki.admin.categories.store') }}" method="POST">
+            <form action="{{ route('wiki.admin.categories.store') }}" method="POST" enctype="multipart/form-data">
 
                 @include('wiki::admin.categories._form')
 

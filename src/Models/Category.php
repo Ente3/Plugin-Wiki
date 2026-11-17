@@ -7,10 +7,15 @@ use Azuriom\Models\Traits\AttachableParent;
 use Azuriom\Models\Traits\HasTablePrefix;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
  * @property int $id
  * @property string $icon
+ * @property string $icon_type
+ * @property string|null $image
+ * @property string|null $image_url
  * @property string $name
  * @property string $slug
  * @property int $position
@@ -47,7 +52,7 @@ class Category extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'icon', 'name', 'slug', 'roles', 'position', 'parent_id', 'is_enabled',
+        'icon', 'icon_type', 'image', 'name', 'slug', 'roles', 'position', 'parent_id', 'is_enabled',
     ];
 
     /**
@@ -87,6 +92,47 @@ class Category extends Model
     public function hasRole(Role $role): bool
     {
         return in_array($role->id, $this->roles, true);
+    }
+
+    /**
+     * Determine if this category is displayed with an image instead of an icon.
+     */
+    public function usesImage(): bool
+    {
+        return $this->icon_type === 'image' && $this->image !== null;
+    }
+
+    /**
+     * Determine if the image of this category is a link to another website,
+     * instead of a file uploaded to this website.
+     */
+    public function hasExternalImage(): bool
+    {
+        return $this->image !== null && Str::startsWith($this->image, ['http://', 'https://']);
+    }
+
+    /**
+     * Get the public URL of the image of this category.
+     */
+    public function getImageUrlAttribute(): ?string
+    {
+        if ($this->image === null) {
+            return null;
+        }
+
+        return $this->hasExternalImage()
+            ? $this->image
+            : Storage::disk('public')->url($this->image);
+    }
+
+    /**
+     * Delete the image file of this category, if it has been uploaded.
+     */
+    public function deleteImageFile(): void
+    {
+        if ($this->image !== null && ! $this->hasExternalImage()) {
+            Storage::disk('public')->delete($this->image);
+        }
     }
 
     public function setRolesAttribute(?array $roles): void

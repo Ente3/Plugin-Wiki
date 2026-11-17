@@ -11,7 +11,13 @@
                 <a href="{{ route('wiki.show', $category) }}">
                     <div class="card">
                         <div class="card-body text-center">
-                            <i class="{{ $category->icon ?? 'bi bi-book' }} fs-1 mb-3 text-primary"></i>
+                            @if($category->usesImage())
+                                <div class="d-flex justify-content-center align-items-center mb-3" style="height: 3.75rem;">
+                                    <img src="{{ $category->image_url }}" alt="" class="mw-100 mh-100" style="object-fit: contain;">
+                                </div>
+                            @else
+                                <i class="{{ $category->icon ?? 'bi bi-book' }} fs-1 mb-3 text-primary"></i>
+                            @endif
 
                             <h2>{{ $category->name }}</h2>
                         </div>
