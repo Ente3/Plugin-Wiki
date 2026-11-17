@@ -15,6 +15,18 @@ class CategoryPolicy
      */
     public function view(?User $user, Category $category): bool
     {
+        if ($user?->can('wiki.admin')) {
+            return true;
+        }
+
+        if (! $category->is_enabled) {
+            return false;
+        }
+
+        if ($category->parent !== null && ! $this->view($user, $category->parent)) {
+            return false;
+        }
+
         if ($category->roles === null) {
             return true;
         }

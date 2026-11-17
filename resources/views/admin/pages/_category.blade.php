@@ -4,8 +4,8 @@
             <span>
                 <i class="bi bi-arrows-move sortable-handle"></i>
                 {{ $category->name }}
-                <a href="#" v-show="show" @click.cancel="show = false" class="mx-1" title="{{ trans('messages.actions.collapse') }}" data-bs-toggle="tooltip"><i class="bi bi-arrows-collapse"></i></a>
-                <a href="#" v-show="!show" @click.cancel="show = true" class="mx-1" title="{{ trans('messages.actions.expand') }}" data-bs-toggle="tooltip"><i class="bi bi-arrows-expand"></i></a>
+                <a href="#" v-show="show" @click.prevent="show = false" class="mx-1" title="{{ trans('messages.actions.collapse') }}" data-bs-toggle="tooltip"><i class="bi bi-arrows-collapse"></i></a>
+                <a href="#" v-show="!show" @click.prevent="show = true" class="mx-1" title="{{ trans('messages.actions.expand') }}" data-bs-toggle="tooltip"><i class="bi bi-arrows-expand"></i></a>
             </span>
             <span>
                 <a href="{{ route('wiki.admin.categories.edit', $category) }}" class="mx-1" title="{{ trans('messages.actions.edit') }}" data-bs-toggle="tooltip"><i class="bi bi-pencil-square"></i></a>

@@ -5,7 +5,6 @@ namespace Azuriom\Plugin\Wiki\Controllers;
 use Azuriom\Http\Controllers\Controller;
 use Azuriom\Plugin\Wiki\Models\Category;
 use Azuriom\Plugin\Wiki\Models\Page;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -31,15 +30,24 @@ class CategoryController extends Controller
         $this->authorize('view', $category);
 
         $page = $category->pages->first();
-        $subCategory = $category->categories()->scopes('enabled')->first();
 
-        if ($page === null && $subCategory !== null) {
-            $page = $subCategory->pages->first();
+        if ($page !== null) {
+            return to_route('wiki.pages.show', [$category, $page]);
         }
 
-        abort_if($page === null, 404);
+        $subCategory = $category->categories()
+            ->enabled()
+            ->get()
+            ->first(fn (Category $sub) => Gate::allows('view', $sub));
 
-        return to_route('wiki.pages.show', [$category, $page]);
+        $page = $subCategory?->pages()->first();
+
+        if ($page === null) {
+            return to_route('wiki.index')
+                ->with('error', trans('wiki::messages.search.empty'));
+        }
+
+        return to_route('wiki.pages.show', [$subCategory, $page]);
     }
 
     /**
@@ -53,8 +61,13 @@ class CategoryController extends Controller
             return to_route('wiki.index');
         }
 
+        $categoryIds = Category::enabled()
+            ->get()
+            ->filter(fn (Category $category) => Gate::allows('view', $category))
+            ->modelKeys();
+
         $pages = Page::search($search)
-            ->whereHas('category', fn (Builder $query) => $query->enabled())
+            ->whereIn('category_id', $categoryIds)
             ->with('category')
             ->paginate();
 
